@@ -1,0 +1,406 @@
+---
+title: "A Quick Introduction to MF via Examples"
+author: ''
+date: "`r Sys.Date()`"
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", 
+                      fig.retina = 2,
+                      fig.align = 'center',
+                      fig.width = 7, fig.height = 5,
+                      warning = FALSE, message = FALSE)
+options("width"=200)
+library(MF.beta4)
+library(tidyverse)
+library(dplyr)
+load("~/Desktop/Chao meeting/MF.beta4/Demo_EF.rda")
+```
+
+<font color=#FF6600>
+</font>
+
+## SOFTWARE NEEDED TO RUN MF IN R
+- Required: [R](https://cran.r-project.org/)
+- Suggested: [RStudio IDE](https://www.rstudio.com/products/RStudio/#Desktop)
+
+## HOW TO RUN MF:
+
+```{r eval=FALSE, echo=FALSE}
+## install the latest version from github
+install.packages('devtools')
+library(devtools)
+install_github("ChunYu327/MF.beta4")
+## import packages
+library(MF.beta4)
+```
+
+
+Here are four main functions we provide in this package : 
+
+- **func_normalized** : Normalized the ecosystem functions data and let all values between 0 and 1.
+- **MF_single** : Computing quantification of multi-fuctionality measures in a single ecosystem when all functions are assumed to be independent, and when the correlation between any two functions is adjusted for. In the latter case, our MF value is obtained based on an integrated measure by considering all possible threshold levels.
+- **MF_multiple** : Computing decomposition of multi-fuctionality measures in multiple ecosystems when all functions are assumed to be independent, and when the correlation between any two functions is adjusted for. In the latter case, our MF value is obtained based on an integrated measure by considering all possible threshold levels.
+- **ggMF** : Visualizing the output from the function `MF_single` or `MF_multiple`.
+
+
+## Normalized the raw data: func_normalized()
+
+We first describe the normalized function `func_normalized()` with default arguments, and the arguments of this function are briefly described below.
+
+```{r eval=FALSE}
+func_normalized <- function(data, fun_cols = 1:ncol(data), negative = NULL, by_group = NULL) 
+```
+
+<table style="width:100%;">
+<colgroup>
+<col width="20%">
+<col width="80%">
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Argument</th>
+<th align="left">Description</th>
+
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><code>data</code></td>
+<td align="left">
+data can be input as a <code>matrix</code>/<code>data.frame</code> (multiple plots by functions).</td>
+
+</tr>
+<tr class="even">
+<td align="center"><code>fun_cols</code></td>
+<td align="left">the order number of the columns which be used as the ecosystem function.</td>
+
+</tr>
+<tr class="odd">
+<td align="center"><code>negative</code></td>
+<td align="left">name of columns to be normalized negatively.</td>
+
+</tr>
+<tr class="even">
+<td align="center"><code>by_group</code></td>
+<td align="left"><name of the column to normalized by group. Default is <code>NULL</code>.</td>
+</tr>
+
+</tbody>
+</table>
+
+
+## Multi-functionality: MF_single()
+
+One of the main function to measure MF is `MF_single()`, and the following is default arguments of the function: 
+
+```{r eval=FALSE}
+MF_single <- function(func_data, species_data = NULL, q = c(0, 1, 2))
+```
+
+The arguments of this function are briefly described below, and will be explained in more details by illustrative examples in later text. This main function computes quantification multi-fuctionality of order q  in a single ecosystem when all functions are assumed to be independent and when the correlation is considered.
+
+<table style="width:100%;">
+<colgroup>
+<col width="20%">
+<col width="80%">
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Argument</th>
+<th align="left">Description</th>
+
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><code>func_data</code></td>
+<td align="left">the ecosystem function data can be input as a vector of functions (for a single assemblage), <code>matrix</code>/<code>data.frame</code> (assemblages by functions).\cr
+The data input must be normalized between 0 and 1 already and must contain only the ecosystem function columns.\cr.
+For <code>species_data</code> is not <code>NULL</code>, the rownames of <code>func_data</code> should be names of 'plotID'.</td>
+
+</tr>
+<tr class="even">
+<td align="center"><code>species_data</code></td>
+<td align="left">the species abundance data must include three columns: 'plotID', 'species' and 'abundance'. Default is <code>NULL</code>.</td>
+
+</tr>
+<tr class="odd">
+<td align="center"><code>q</code></td>
+<td align="left">a numerical vector specifying the diversity orders. Default is 0, 1 and 2.</td>
+</tr>
+
+</tbody>
+</table>
+
+
+
+## Multi-functionality: MF_multiple()
+
+The other main function to measure MF is `MF_multiple()`, and the following is default arguments of the function: 
+
+```{r eval=FALSE}
+MF_multiple <- function(func_data, species_data = NULL, q = c(0, 1, 2), by_group = NULL) 
+```
+
+The arguments of this function are briefly described below, and will be explained in more details by illustrative examples in later text. This main function computes decomposition multi-fuctionality of order q  in multiple ecosystems when all functions are assumed to be independent and when the correlation is considered.
+
+<table style="width:100%;">
+<colgroup>
+<col width="20%">
+<col width="80%">
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Argument</th>
+<th align="left">Description</th>
+
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><code>func_data</code></td>
+<td align="left">the ecosystem function data can be input as a vector of functions (for a single assemblage), <code>matrix</code>/<code>data.frame</code> (assemblages by functions).\cr
+The data input must be normalized between 0 and 1 already.\cr
+For <code>by_group = NULL</code> the <code>func_data</code> must contain only the ecosystem function columns. Otherwise, you must add the <code>by_group</code> column in data.
+For <code>species_data</code> is not <code>NULL</code>, the rownames of <code>func_data</code> should be names of 'plotID'.</td>
+
+</tr>
+<tr class="even">
+<td align="center"><code>species_data</code></td>
+<td align="left">the species abundance data must include three columns: 'plotID', 'species' and 'abundance'. Default is <code>NULL</code>.</td>
+
+</tr>
+<tr class="odd">
+<td align="center"><code>q</code></td>
+<td align="left">a numerical vector specifying the diversity orders. Default is 0, 1 and 2.</td>
+
+</tr>
+<tr class="even">
+<td align="center"><code>by_group</code></td>
+<td align="left">name of the column to be paired by group. Default is <code>NULL</code>.</td>
+</tr>
+</tbody>
+</table>
+
+
+
+The above two functions returns a data.frame which can be further used to make plots using the function `ggMF()` to be described below. 
+
+
+
+### Example Data
+A forest tree species and ecosystem function data is included in `MF` package for illustration. In the data, a total of 209 plots were established in mature forests in six countries, representing six major European forest types: boreal forest (Finland); hemi-boreal (Poland); temperate deciduous (Germany); mountainous deciduous (Romania); thermophilous deciduous (Italy); and Mediterranean mixed (Spain). In each country, three to five common tree species were selected for the species pool; species richness in 209 plots consisted of one to five species sampled from the species pool. A total of 26 ecosystem functions or properties were measured in each plot.
+
+For this data, the following commands display how to compute multi-functionality and corresponding decomposition in multiple ecosystems .
+
+#### Ecosystem functions data
+
+Run the following code to view raw forest data: (Here we only show the first ten rows of the first three ecosystem functions)
+
+```{r eval=FALSE}
+data("Europe_Forest_raw")
+Europe_Forest_raw
+```
+
+```{r echo=FALSE}
+data("Europe_Forest_raw")
+head(cbind(Europe_Forest_raw[1:3], round(Europe_Forest_raw[4:6], 3)), 10)
+```
+
+Since the data is not normalized, we then use `func_normalized()` to do standardization. Note that, in this data, the ecosystem functions are column 4 to column 29. And there are two ecosystem functions should be normalized negatively: `"soil_cn_ff_10"` and `"wue"`. Furthermore, the performance of the ecosystem functions are quite different between six countries, thus, we do normalization and analysis among each countries.
+
+```{r echo=TRUE}
+data("Europe_Forest_raw")
+norm_Europe_Forest = func_normalized(data = Europe_Forest_raw, 
+                                     fun_cols = 4:29, 
+                                     negative = c("soil_cn_ff_10","wue"), 
+                                     by_group = "Country")
+```
+
+```{r, eval=FALSE}
+head(cbind(norm_Europe_Forest[1:3], round(norm_Europe_Forest[4:6], 3)), 10)
+```
+
+
+This normalized data is same as the data `Europe_Forest` in `MF` package .
+
+
+#### Species abundance data
+
+Run the following code to view complete species abundance data:
+
+```{r eval=FALSE}
+data("Europe_Forest_species")
+Europe_Forest_species
+```
+
+Here, we only show the first ten rows.
+
+```{r echo=FALSE}
+data("Europe_Forest_species")
+head(Europe_Forest_species,10)
+```
+
+### Computing Multi-functionality Via Example
+
+#### If the `species_data` is not provided
+For example, given a normalized data, we run the `MF_single()` function without setting `species_data` to compute uncorrelated and correlated multi-functionality. (Here we only show the first six outputs)
+
+
+```{r echo=TRUE}
+data("Europe_Forest")
+output1 <- MF_single(func_data = Europe_Forest[,4:29])
+```
+
+```{r, eval=FALSE}
+output1 %>% mutate(qMF = round(qMF,3)) %>% head(6)
+```
+
+
+The output contains ID of plot (`plotID`) which is according to the row names of the input data, `Type` (uncorrelated or correlated), the diversity order (`Order.q`) and multi-functionality (`qMF`).
+
+
+#### If there is `species_data` given to function `MF_single`
+
+
+```{r echo=TRUE}
+data("Europe_Forest")
+data("Europe_Forest_species")
+output2 <- MF_single(func_data = Europe_Forest[,4:29],species_data = Europe_Forest_species)
+```
+
+```{r echo=FALSE}
+output2 %>% mutate(qMF = round(qMF,3),
+                          Species.diversity = round(Species.diversity,3)) %>% 
+  head(6)
+```
+
+
+The output has only more one column `Species.diversity` than the previous one.
+
+
+### Computing Decomposition of Multi-functionality In Multiple Ecosystems Via Example
+For example, we run the `MF_multiple()` function with forest data to compute uncorrelated and correlated multi-functionality relationships across spatial scales. (Here we only show the first six outputs)
+
+```{r eval=FALSE}
+data("Europe_Forest")
+output3 = MF_multiple(func_data = Europe_Forest[,4:30],
+                      species_data = Europe_Forest_species,
+                      by_group = "Country")
+```
+
+```{r include=FALSE}
+output3 <- EF_multiple %>% 
+  mutate(Type=factor(Type,levels = unique(Type)),
+         Scale=factor(Scale,levels = unique(Scale))) %>%
+  group_by(plotID,Country,Type,Scale) %>%
+  summarise(Order.q=Order.q,
+            qMF=round(qMF,3),
+            Species.diversity=round(Species.diversity,3))
+```
+
+
+```{r echo=FALSE}
+head(output3, 6)
+```
+
+
+Each row of the output represents the decomposition of species diversity and multi-functionality across two plots. The output contains ID (`plotID`) which is according to the row names of the input data, `Country` of two plots, `Type` (uncorrelated or correlated), `Scale` (gamma, alpha or beta), the diversity order (`Order.q`), multi-functionality (`qMF`) and decomposition of species diversity(`Species.diversity`).
+
+For `species_data` is not provided, the column of decomposition of species diversity are not included in the output.
+
+## Graphic Display: ggMF()
+
+The function `ggMF()`, which extends `ggplot2` to the `"MF"` output object with default arguments, is described as follows: 
+
+```{r eval=FALSE}
+ggMF <- function(output, by_group = NULL, facets_scale = "fixed", 
+                 fit = "LMM.intercept", text = "Slope")
+```
+
+<table style="width:100%;">
+<colgroup>
+<col width="20%">
+<col width="80%">
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Argument</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><code>output</code></td>
+<td align="left">the output from <code>MF_single</code> or <code>MF_multiple</code>. Note that, the column <code>Species.diversity</code> or the three columns <code>Species_gamma</code>, <code>Species_alpha</code> and <code>Species_beta</code> must be included in it, respectively.</td>
+
+</tr>
+<tr class="even">
+<td align="center"><code>by_group</code></td>
+<td align="left">name of the column to be plot in difference colors by group. Default is <code>NULL</code>.\cr
+For <code>fit</code> is selected to be linear mixed model, you must offer the <code>by_group</code> argument.
+</td>
+
+</tr>
+<tr class="odd">
+<td align="center"><code>facets_scale</code></td>
+<td align="left">Are scales shared across all facets (the default, <code>"fixed"</code>), or do they vary across rows (<code>"free_x"</code>), columns (<code>"free_y"</code>), or both rows and columns (<code>"free"</code>)?</td>
+
+</tr>
+<tr class="even">
+<td align="center"><code>fit</code></td>
+<td align="left">method of the fitted line. Select <code>fit = "lm"</code> for the linear model, or <code>fit = "LMM.intercept"</code>, <code>fit = "LMM.slope"</code> and <code>fit = "LMM.both"</code> for the linear mixed model with random effect 'intercept', 'slope' and 'both intercept and slope', respectively.Default is <code>fit = "LMM.intercept"</code>.</td>
+
+
+</tr>
+<tr class="odd">
+<td align="center"><code>text</code></td>
+<td align="left">what text information would show in plots? Select <code>text = "Slope"</code> to see estimated of slopes, or <code>text = "R.squared"</code> to see model performance.Default is <code>text = "Slope"</code>.</td>
+
+</tr>
+
+</tbody>
+</table>
+
+
+The `ggMF()` function is a wrapper around the `ggplot2` package to display the relationship between species diversity and multi-functionality when <code>output</code> is from <code>MF_single</code>, or to display the relationship between the decomposition of species diversity and multi-functionality (MF alpha vs. species alpha, MF beta vs. species beta, and MF gamma vs. species gamma) when <code>output</code> is from <code>MF_multiple</code> using a single line of code. The resulting object is of class `"ggplot"` or `"list"` containing two lists of `ggplot` objects, so it can be manipulated using the `ggplot2` tools. Users can visualize the output with different methods of the fitted line by setting the parameter <code>**fit**</code>:
+
+
+We first display multi-functionality in single ecosystem with `by_group` and without `by_group`.
+```{r, fig.align='center', fig.height=6.5, fig.width=6.5}
+ggMF(output2, facets_scale = 'fixed', fit = "lm")
+```
+
+
+```{r, fig.align='center', fig.height=6.5, fig.width=6.5}
+output2 <- data.frame("plotID"=rownames(Europe_Forest),
+                      "Country"=Europe_Forest$Country) %>% 
+  left_join(output2,.,by="plotID")
+ggMF(output2, by_group = "Country", facets_scale = 'fixed', 
+     fit = "LMM.intercept")  
+```
+
+
+
+And then, display decomposition of multi-functionality in multiple ecosystems with linear model fitted line and linear mixed model with random effect 'intercept' fitted line.
+
+```{r}
+figure_lm <- ggMF(output3, by_group = "Country", scale = 'fixed', fit = "lm")
+figure_LMM <- ggMF(output3, by_group = "Country", scale = 'fixed', fit = "LMM.intercept",text = "R.squared")
+```
+
+```{r, fig.align='center', fig.height=12, fig.width=6.2}
+figure_lm$Uncorrelated$ALL
+figure_LMM$Uncorrelated$ALL
+```
+
+```{r, fig.align='center', fig.height=12, fig.width=6.2}
+figure_LMM$Correlated$ALL
+```
+
+```{r, fig.align='center', fig.height=5, fig.width=6.2}
+figure_LMM$Correlated$Gamma
+figure_LMM$Correlated$Alpha
+figure_LMM$Correlated$Beta
+```
