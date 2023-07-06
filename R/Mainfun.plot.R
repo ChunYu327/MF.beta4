@@ -83,7 +83,7 @@ ggMF <- function(output, by_group = NULL, facets_scale = 'fixed', fit = "LMM.int
 
       output <- suppressMessages(output %>% dplyr::left_join(lm_data))
 
-      ggplot(data = output, aes(x = Species.diversity, y = qMF))+
+      plot_output <- ggplot(data = output, aes(x = Species.diversity, y = qMF))+
         facet_grid(Type ~ Order.q, scales = facets_scale) +
         geom_point(size=0.7)+
         geom_smooth(aes(lty = Significance, col=group), method = "lm", se = F, size=1.2, formula = y ~ x)+
@@ -211,7 +211,7 @@ ggMF <- function(output, by_group = NULL, facets_scale = 'fixed', fit = "LMM.int
           ) %>%
             filter(term=="Species.diversity") %>% dplyr::select(-c(term, std.error, statistic, p.value))
           out <- suppressMessages(out %>% dplyr::left_join(lm_data))
-          ggplot(data = out, aes(x = Species.diversity, y = qMF))+
+          plot_output <- ggplot(data = out, aes(x = Species.diversity, y = qMF))+
             facet_grid(~Order.q, scales = facets_scale) +
             geom_point(size=0.7,alpha=0.2)+
             geom_smooth(aes(lty = Significance, col=group), method = "lm", se = F, size=1.2, formula = y ~ x)+
