@@ -15,6 +15,8 @@
 #' @import patchwork
 #' @import ggpubr
 #' @import grid
+#' @import lme4
+#' @import lmerTest
 #'
 #' @return For \code{MF_single} output, return a figure for multi-functionality with uncorrelated and correlated functions. For \code{MF_multiple} output, return a list of uncorrelated and correlated figures.
 #'

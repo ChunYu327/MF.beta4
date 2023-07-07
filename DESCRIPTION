@@ -19,6 +19,8 @@ Imports: broom,
          purrr,
          patchwork,
          tidyr,
+         lme4,
+         lmerTest,
 	       tidyverse,
          iNEXT.3D
 Encoding: UTF-8
