@@ -77,8 +77,8 @@ ggMF <- function(output, by_group = NULL, facets_scale = 'fixed', fit = "LMM.int
     if(is.null(by_group)){
       lm_data <- output %>% group_by(Type, Order.q) %>% do(broom::tidy(lm(qMF ~ Species.diversity, .)))
       lm_data <- mutate(lm_data,
-                        Significance=factor(ifelse(p.value<0.05, "Significant slope (P < 0.05)", "Insignificant slope"),
-                                            levels = c("Significant slope (P < 0.05)", "Insignificant slope")),
+                        Significance=factor(ifelse(p.value<0.05, "Significant slope (P < 0.05)", "Non-significant slope"),
+                                            levels = c("Significant slope (P < 0.05)", "Non-significant slope")),
                         group="Linear model"
       ) %>%
         filter(term=="Species.diversity") %>% dplyr::select(-c(term, std.error, statistic, p.value))
@@ -110,8 +110,8 @@ ggMF <- function(output, by_group = NULL, facets_scale = 'fixed', fit = "LMM.int
           mutate(group="Linear mixed model")
 
       lm_overall <- mutate(lm_all,
-                           Significance=factor(ifelse(p.value<0.05, "Significant slope (P < 0.05)", "Insignificant slope"),
-                                               levels = c("Significant slope (P < 0.05)", "Insignificant slope"))
+                           Significance=factor(ifelse(p.value<0.05, "Significant slope (P < 0.05)", "Non-significant slope"),
+                                               levels = c("Significant slope (P < 0.05)", "Non-significant slope"))
       ) %>% dplyr::select(-c(std.error, statistic, p.value)) %>%
         pivot_wider(names_from = term,values_from = estimate) %>%
         group_by(Type,Order.q,group) %>%
@@ -122,8 +122,8 @@ ggMF <- function(output, by_group = NULL, facets_scale = 'fixed', fit = "LMM.int
 
       if(fit %in% c("lm","LMM.intercept")){
         lm_data <- output %>% group_by(Type, Order.q, group) %>% do(broom::tidy(lm(qMF ~ Species.diversity, .))) %>%
-          mutate(Significance=factor(ifelse(p.value<0.05, "Significant slope (P < 0.05)", "Insignificant slope"),
-                                     levels = c("Significant slope (P < 0.05)", "Insignificant slope"))
+          mutate(Significance=factor(ifelse(p.value<0.05, "Significant slope (P < 0.05)", "Non-significant slope"),
+                                     levels = c("Significant slope (P < 0.05)", "Non-significant slope"))
           ) %>%
           filter(term=="Species.diversity") %>% dplyr::select(-c(term, std.error, statistic, p.value))
 
@@ -207,8 +207,8 @@ ggMF <- function(output, by_group = NULL, facets_scale = 'fixed', fit = "LMM.int
         if(is.null(by_group)){
           lm_data <- out %>% group_by(Order.q) %>% do(broom::tidy(lm(qMF ~ Species.diversity, .)))
           lm_data <- mutate(lm_data,
-                            Significance=factor(ifelse(p.value<0.05, "Significant slope (P < 0.05)", "Insignificant slope"),
-                                                levels = c("Significant slope (P < 0.05)", "Insignificant slope")),
+                            Significance=factor(ifelse(p.value<0.05, "Significant slope (P < 0.05)", "Non-significant slope"),
+                                                levels = c("Significant slope (P < 0.05)", "Non-significant slope")),
                             group="Linear model"
           ) %>%
             filter(term=="Species.diversity") %>% dplyr::select(-c(term, std.error, statistic, p.value))
@@ -238,8 +238,8 @@ ggMF <- function(output, by_group = NULL, facets_scale = 'fixed', fit = "LMM.int
               mutate(group="Linear mixed model")
 
           lm_overall <- mutate(lm_all,
-                               Significance=factor(ifelse(p.value<0.05, "Significant slope (P < 0.05)", "Insignificant slope"),
-                                                   levels = c("Significant slope (P < 0.05)", "Insignificant slope"))
+                               Significance=factor(ifelse(p.value<0.05, "Significant slope (P < 0.05)", "Non-significant slope"),
+                                                   levels = c("Significant slope (P < 0.05)", "Non-significant slope"))
           ) %>% dplyr::select(-c(std.error, statistic, p.value)) %>%
             pivot_wider(names_from = term,values_from = estimate) %>%
             group_by(Order.q,group) %>%
@@ -250,8 +250,8 @@ ggMF <- function(output, by_group = NULL, facets_scale = 'fixed', fit = "LMM.int
 
           if(fit %in% c("lm","LMM.intercept")){
             lm_data <- out %>% group_by(Order.q, group) %>% do(broom::tidy(lm(qMF ~ Species.diversity, .))) %>%
-              mutate(Significance=factor(ifelse(p.value<0.05, "Significant slope (P < 0.05)", "Insignificant slope"),
-                                         levels = c("Significant slope (P < 0.05)", "Insignificant slope"))
+              mutate(Significance=factor(ifelse(p.value<0.05, "Significant slope (P < 0.05)", "Non-significant slope"),
+                                         levels = c("Significant slope (P < 0.05)", "Non-significant slope"))
               ) %>%
               filter(term=="Species.diversity") %>% dplyr::select(-c(term, std.error, statistic, p.value))
 
