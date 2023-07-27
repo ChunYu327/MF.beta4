@@ -91,7 +91,7 @@ ggMF <- function(output, by_group = NULL, facets_scale = 'fixed', fit = "LMM.int
         geom_smooth(aes(lty = Significance, col=group), method = "lm", se = F, size=1.2, formula = y ~ x)+
         geom_text(data = lm_data, aes(x = -Inf, y = Inf, label=paste0("Slope = ", round(estimate, 4)), col=group),
                   hjust= -0.1, vjust= 2, size=3, key_glyph = draw_key_path)+
-        scale_color_manual(values = "red",drop=FALSE)+
+        scale_color_manual(values = "red")+
         theme_bw() +
         theme(legend.position = "bottom", legend.box = "vertical", legend.margin=margin(-6,0,0,0), legend.title = element_blank())+
         guides(
@@ -131,6 +131,7 @@ ggMF <- function(output, by_group = NULL, facets_scale = 'fixed', fit = "LMM.int
         lm_data <- lm_data %>% ungroup() %>%
           dplyr::add_row(lm_overall %>% dplyr::select(-Intercept)) %>%
           mutate(group=factor(group,levels = unique(group)))
+        output$group <- factor(output$group,levels = levels(lm_data$group))
 
         plot_output <- ggplot(data = output, aes(x = Species.diversity, y = qMF,col = group))+
           facet_grid(Type ~ Order.q, scales = facets_scale) +
@@ -149,6 +150,7 @@ ggMF <- function(output, by_group = NULL, facets_scale = 'fixed', fit = "LMM.int
           rename(estimate = Slope) %>%
           dplyr::add_row(lm_overall %>% dplyr::select(-c(Significance,Intercept))) %>%
           mutate(group=factor(group,levels = unique(group)))
+        output$group <- factor(output$group,levels = levels(lm_data$group))
 
         plot_output <- ggplot(data = output, aes(x = Species.diversity, y = qMF,col = group))+
           facet_grid(Type ~ Order.q, scales = facets_scale) +
@@ -166,7 +168,6 @@ ggMF <- function(output, by_group = NULL, facets_scale = 'fixed', fit = "LMM.int
         mutate(h=rep(c(-0.1,-1.5),(length(unique(group))+1)/2)[1:length(unique(group))],
                v=rep(2+(0:((length(unique(group))+1)/2-1))*1.5,each=2)[1:length(unique(group))]) %>% suppressMessages
 
-      output$group <- factor(output$group,levels = levels(lm_data$group))
       col_manual <- c(stdPalette[1:(length(levels(output$group))-1)],"red") %>%
         `names<-`(levels(output$group))
 
@@ -259,6 +260,7 @@ ggMF <- function(output, by_group = NULL, facets_scale = 'fixed', fit = "LMM.int
             lm_data <- lm_data %>% ungroup() %>%
               dplyr::add_row(lm_overall %>% dplyr::select(-Intercept)) %>%
               mutate(group=factor(group,levels = unique(group)))
+            out$group <- factor(out$group,levels = levels(lm_data$group))
 
             plot_output <- ggplot(data = out, aes(x = Species.diversity, y = qMF,col = group))+
               facet_grid( ~ Order.q, scales = facets_scale) +
@@ -277,6 +279,7 @@ ggMF <- function(output, by_group = NULL, facets_scale = 'fixed', fit = "LMM.int
               rename(estimate = Slope) %>%
               dplyr::add_row(lm_overall %>% dplyr::select(-c(Significance,Intercept))) %>%
               mutate(group=factor(group,levels = unique(group)))
+            out$group <- factor(out$group,levels = levels(lm_data$group))
 
             plot_output <- ggplot(data = out, aes(x = Species.diversity, y = qMF,col = group))+
               facet_grid(~Order.q, scales = facets_scale) +
@@ -295,7 +298,6 @@ ggMF <- function(output, by_group = NULL, facets_scale = 'fixed', fit = "LMM.int
             mutate(h=rep(c(-0.1,h_j),(length(unique(group))+1)/2)[1:length(unique(group))],
                    v=rep(2+(0:((length(unique(group))+1)/2-1))*1.5,each=2)[1:length(unique(group))]) %>% suppressMessages
 
-          out$group <- factor(out$group,levels = levels(lm_data$group))
           col_manual <- c(stdPalette[1:(length(levels(out$group))-1)],"red") %>%
             `names<-`(levels(out$group))
 
