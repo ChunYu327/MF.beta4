@@ -91,11 +91,11 @@ ggMF <- function(output, by_group = NULL, facets_scale = 'fixed', fit = "LMM.int
         geom_smooth(aes(lty = Significance, col=group), method = "lm", se = F, size=1.2, formula = y ~ x)+
         geom_text(data = lm_data, aes(x = -Inf, y = Inf, label=paste0("Slope = ", round(estimate, 4)), col=group),
                   hjust= -0.1, vjust= 2, size=3, key_glyph = draw_key_path)+
-        scale_color_manual(values = "red")+
+        scale_color_manual(values = "red",drop=FALSE)+
         theme_bw() +
         theme(legend.position = "bottom", legend.box = "vertical", legend.margin=margin(-6,0,0,0), legend.title = element_blank())+
         guides(
-          linetype = guide_legend(override.aes = list(col = "#000000",size=0.7))
+          linetype = guide_legend(override.aes = list(col = "#000000",linewidth=0.7))
         )+
         labs(x = "Species diversity", y = "Multi-functionality")
 
@@ -136,7 +136,7 @@ ggMF <- function(output, by_group = NULL, facets_scale = 'fixed', fit = "LMM.int
           facet_grid(Type ~ Order.q, scales = facets_scale) +
           geom_point(size=0.9,alpha=0.2)+
           geom_smooth(aes(lty = Significance), method = "lm", se = F, size=0.8, formula = y ~ x)+
-          geom_abline(data = lm_overall, aes(slope=estimate, intercept=Intercept, lty = Significance), size=1.3, col="red",key_glyph = draw_key_path)
+          geom_abline(data = lm_overall, aes(slope=estimate, intercept=Intercept, lty = Significance), linewidth=1.3, col="red",key_glyph = draw_key_path)
       }
       else{
         lm_data <- output %>% group_by(Type, Order.q) %>%
@@ -154,7 +154,7 @@ ggMF <- function(output, by_group = NULL, facets_scale = 'fixed', fit = "LMM.int
           facet_grid(Type ~ Order.q, scales = facets_scale) +
           geom_point(size=0.9,alpha=0.2)+
           geom_segment(aes(x=x0,xend=x1,y=Intercept+Slope*x0,yend=Intercept+Slope*x1),size=0.5)+
-          geom_abline(data = lm_overall, aes(slope=estimate, intercept=Intercept, lty = Significance), size=1.3, col="red",key_glyph = draw_key_path)
+          geom_abline(data = lm_overall, aes(slope=estimate, intercept=Intercept, lty = Significance), linewidth=1.3, col="red",key_glyph = draw_key_path)
       }
 
 
@@ -174,9 +174,9 @@ ggMF <- function(output, by_group = NULL, facets_scale = 'fixed', fit = "LMM.int
       if(text == "Slope"){
         plot_output <- plot_output +
           geom_text(data = lm_data, aes(x = -Inf, y = Inf, label=Label, hjust= h, vjust= v), size=3,key_glyph = draw_key_path)+
-          scale_colour_manual(values = col_manual) +
+          scale_colour_manual(values = col_manual,drop=FALSE) +
           theme_bw() +
-          guides(linetype = guide_legend(title = "",order = 1,override.aes = list(col = "#000000",size=0.6)),
+          guides(linetype = guide_legend(title = "",order = 1,override.aes = list(col = "#000000",linewidth=0.6)),
                  col = guide_legend(title = by_group))+
           theme(legend.position = "bottom", legend.box = "vertical", legend.margin=margin(-6,0,0,0))+
           labs(x = "Species diversity", y = "Multi-functionality")
@@ -191,9 +191,9 @@ ggMF <- function(output, by_group = NULL, facets_scale = 'fixed', fit = "LMM.int
 
         plot_output <- plot_output +
           geom_text(data = lm_text, aes(x = -Inf, y = Inf, label=Label, hjust= h, vjust= v), size=3,key_glyph = draw_key_path, parse = T,col="red")+
-          scale_colour_manual(values = col_manual) +
+          scale_colour_manual(values = col_manual,drop=FALSE) +
           theme_bw() +
-          guides(linetype = guide_legend(title = "",order = 1,override.aes = list(col = "red",size=0.6)),
+          guides(linetype = guide_legend(title = "",order = 1,override.aes = list(col = "red",linewidth=0.6)),
                  col = guide_legend(title = by_group))+
           theme(legend.position = "bottom", legend.box = "vertical", legend.margin=margin(-6,0,0,0))+
           labs(x = "Species diversity", y = "Multi-functionality")
@@ -223,7 +223,7 @@ ggMF <- function(output, by_group = NULL, facets_scale = 'fixed', fit = "LMM.int
             theme_bw() +
             theme(legend.position = "bottom", legend.box = "vertical", legend.margin=margin(-6,0,0,0), legend.title = element_blank())+
             guides(
-              linetype = guide_legend(override.aes = list(col = "#000000",size=0.7))
+              linetype = guide_legend(override.aes = list(col = "#000000",linewidth=0.7))
             )+
             labs(x = xlab, y = ylab)
 
@@ -264,7 +264,7 @@ ggMF <- function(output, by_group = NULL, facets_scale = 'fixed', fit = "LMM.int
               facet_grid( ~ Order.q, scales = facets_scale) +
               geom_point(size=0.7,alpha=0.05)+
               geom_smooth(aes(lty = Significance), method = "lm", se = F, size=0.8, formula = y ~ x)+
-              geom_abline(data = lm_overall, aes(slope=estimate, intercept=Intercept, lty = Significance), size=1.3, col="red",key_glyph = draw_key_path)
+              geom_abline(data = lm_overall, aes(slope=estimate, intercept=Intercept, lty = Significance), linewidth=1.3, col="red",key_glyph = draw_key_path)
           }
           else{
             lm_data <- out %>% group_by(Order.q) %>%
@@ -282,7 +282,7 @@ ggMF <- function(output, by_group = NULL, facets_scale = 'fixed', fit = "LMM.int
               facet_grid(~Order.q, scales = facets_scale) +
               geom_point(size=0.7,alpha=0.05)+
               geom_segment(aes(x=x0,xend=x1,y=Intercept+Slope*x0,yend=Intercept+Slope*x1),size=0.5)+
-              geom_abline(data = lm_overall, aes(slope=estimate, intercept=Intercept, lty = Significance), size=1.3, col="red",key_glyph = draw_key_path)
+              geom_abline(data = lm_overall, aes(slope=estimate, intercept=Intercept, lty = Significance), linewidth=1.3, col="red",key_glyph = draw_key_path)
           }
 
 
@@ -303,9 +303,9 @@ ggMF <- function(output, by_group = NULL, facets_scale = 'fixed', fit = "LMM.int
           if(text == "Slope"){
             plot_output <- plot_output +
               geom_text(data = lm_data, aes(x = -Inf, y = Inf, label=Label, hjust= h, vjust= v), size=3,key_glyph = draw_key_path)+
-              scale_colour_manual(values = col_manual) +
+              scale_colour_manual(values = col_manual,drop=FALSE) +
               theme_bw() +
-              guides(linetype = guide_legend(title = "",order = 1,override.aes = list(col = "#000000",size=0.6)),
+              guides(linetype = guide_legend(title = "",order = 1,override.aes = list(col = "#000000",linewidth=0.6)),
                      col = guide_legend(title = by_group))+
               theme(legend.position = "bottom", legend.box = "vertical", legend.margin=margin(-6,0,0,0))+
               labs(x = xlab, y = ylab)
@@ -320,9 +320,9 @@ ggMF <- function(output, by_group = NULL, facets_scale = 'fixed', fit = "LMM.int
 
             plot_output <- plot_output +
               geom_text(data = lm_text, aes(x = -Inf, y = Inf, label=Label, hjust= h, vjust= v), size=3,key_glyph = draw_key_path, parse = T,col="red")+
-              scale_colour_manual(values = col_manual) +
+              scale_colour_manual(values = col_manual,drop=FALSE) +
               theme_bw() +
-              guides(linetype = guide_legend(title = "",order = 1,override.aes = list(col = "red",size=0.6)),
+              guides(linetype = guide_legend(title = "",order = 1,override.aes = list(col = "red",linewidth=0.6)),
                      col = guide_legend(title = by_group))+
               theme(legend.position = "bottom", legend.box = "vertical", legend.margin=margin(-6,0,0,0))+
               labs(x = xlab, y = ylab)
